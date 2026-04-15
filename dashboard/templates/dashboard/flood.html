@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="space-y-6 animate-fade-in-up">
+
+    <!-- KPI Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="bg-red-50 rounded-2xl p-6 shadow-sm border border-red-100 gradient-border-hover lift-hover group">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">High Risk</span>
+                <span class="p-2 bg-red-100 rounded-full group-hover:bg-red-500 group-hover:text-white transition-colors text-red-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </span>
+            </div>
+            <h2 class="text-4xl font-extrabold text-red-700">{{ risk_summary|default_if_none:""|stringformat:"s"|slice:"1:-1"|default:"None Found"|center:"2" }}</h2>
+        </div>
+
+        <!-- Static demo tiles for layout representation -->
+        <div class="bg-amber-50 rounded-2xl p-6 shadow-sm border border-amber-100 gradient-border-hover lift-hover group">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold text-amber-500 uppercase tracking-wider">Moderate Risk</span>
+            </div>
+            <h2 class="text-4xl font-extrabold text-amber-600">Monitored</h2>
+        </div>
+
+        <div class="bg-green-50 rounded-2xl p-6 shadow-sm border border-green-100 gradient-border-hover lift-hover group">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-bold text-green-500 uppercase tracking-wider">Low Risk</span>
+            </div>
+            <h2 class="text-4xl font-extrabold text-green-600">Safe Zones</h2>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden lift-hover">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-gray-800">Top High Risk Anomalies Detected</h3>
+            <span class="text-xs text-gray-500 font-medium">Statistical Analysis</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-600 uppercase tracking-wide">Region</th>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-600 uppercase tracking-wide">Year</th>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-600 uppercase tracking-wide">Recorded Rainfall (mm)</th>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-600 uppercase tracking-wide text-right">Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for entry in high_risk_entries %}
+                    <tr class="hover:bg-red-50/50 transition-colors group cursor-default">
+                        <td class="py-4 px-6 text-sm text-gray-800 font-semibold">{{ entry.region }}</td>
+                        <td class="py-4 px-6 text-sm text-gray-600">{{ entry.year }}</td>
+                        <td class="py-4 px-6 text-sm text-gray-800 tabular-nums">
+                            {{ entry.annual|floatformat:2 }}
+                            <!-- CSS Bar hack -->
+                            <div class="w-full bg-gray-200 mt-2 h-1 overflow-hidden">
+                                <div class="bg-red-500 h-full scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"></div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-sm text-right font-bold text-red-600">
+                            <span class="px-3 py-1 bg-red-100 rounded-full text-xs box-border border border-red-200 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                                {{ entry.risk_level }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="py-8 text-center text-gray-500">No High Risk anomalies detected.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+</style>
+{% endblock %}

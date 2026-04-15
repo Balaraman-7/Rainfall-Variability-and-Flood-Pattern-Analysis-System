@@ -1,0 +1,66 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="space-y-6 animate-fade-in-up">
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 lift-hover text-center">
+        <h2 class="text-2xl font-extrabold text-blue-800 tracking-tight">Interactive CSS Map</h2>
+        <p class="text-gray-500 text-sm mt-2">Hover over regions to view recorded mean annual rainfall statistics.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden lift-hover relative min-h-[600px] flex items-center justify-center bg-gray-50 p-8">
+        
+        <!-- Abstract Tile Map Representation (Pure CSS) -->
+        <!-- In a real deployment, replace paths with actual GIS SVG paths. -->
+        <div class="relative w-full max-w-4xl aspect-[4/3] border-4 border-dashed border-gray-200 rounded-3xl flex items-center justify-center z-10 overflow-hidden">
+            
+            <div class="absolute inset-0 bg-blue-50/50 opacity-50 z-0 pattern-dots"></div>
+            
+            <!-- We will render discrete blocks to simulate map interactivity using peer/hover mechanics -->
+            <div class="z-10 flex flex-wrap gap-4 justify-center p-8 max-w-2xl">
+                {% for region, value in map_data.items %}
+                    
+                    <!-- CSS Native Interactivity Concept -->
+                    <div class="group relative cursor-crosshair">
+                        <!-- Abstract Shape -->
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-blue-100 hover:bg-blue-600 rounded-xl shadow-sm border border-blue-200 hover:border-blue-400 transition-all duration-300 flex items-center justify-center group-hover:-translate-y-2 group-hover:shadow-xl">
+                            <svg class="w-8 h-8 text-blue-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        
+                        <!-- Tooltip via Pure CSS -->
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform group-hover:-translate-y-1">
+                            <div class="bg-gray-900 text-white rounded-xl p-4 shadow-2xl relative">
+                                <div class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1 truncate" title="{{ region }}">{{ region|title }}</div>
+                                <h3 class="text-2xl font-black text-blue-400">{{ value }}<span class="text-sm font-medium text-gray-300 ml-1">mm</span></h3>
+                                
+                                <!-- Tooltip Arrow -->
+                                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-900 rotate-45"></div>
+                            </div>
+                        </div>
+                    </div>
+                
+                {% empty %}
+                   <div class="text-gray-400 font-semibold animate-pulse">Load dataset to view regional interaction blocks.</div>
+                {% endfor %}
+            </div>
+            
+        </div>
+        
+    </div>
+
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+    
+    /* Simple CSS dot pattern */
+    .pattern-dots {
+        background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+        background-size: 20px 20px;
+    }
+</style>
+{% endblock %}

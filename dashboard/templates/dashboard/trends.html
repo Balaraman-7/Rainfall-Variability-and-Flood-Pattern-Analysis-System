@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="space-y-6 animate-fade-in-up">
+
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 lift-hover text-center">
+        <h2 class="text-2xl font-extrabold text-blue-800 tracking-tight">Rainfall Time Series</h2>
+        <p class="text-gray-500 text-sm mt-2">Historical trends across years based on your selection.</p>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 lift-hover mt-4 min-h-[400px]">
+        {% if trend_chart %}
+            <div class="w-full flex justify-center bg-gray-50 rounded-xl p-4 overflow-x-auto relative group">
+                <img src="data:image/png;base64,{{ trend_chart }}" alt="Trend Chart" class="max-w-full h-auto object-contain hover:scale-105 transition-transform duration-[400ms]">
+                <!-- Pure CSS Tooltip/overlay hack -->
+                <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur scale-0 group-hover:scale-100 transition-transform duration-300 p-3 rounded-lg shadow border border-gray-100 text-xs text-gray-700 font-semibold">
+                    Interactive Zoom Disabled
+                    <span class="block text-gray-500 font-normal mt-1">Export report to view raw data.</span>
+                </div>
+            </div>
+        {% else %}
+            <div class="flex flex-col items-center justify-center h-64 text-gray-400">
+                <svg class="w-16 h-16 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <p>No data available for the selected filters.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+</style>
+{% endblock %}
